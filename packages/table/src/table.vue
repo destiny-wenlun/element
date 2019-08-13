@@ -33,7 +33,7 @@
       class="el-table__body-wrapper"
       ref="bodyWrapper"
       :class="[layout.scrollX ? `is-scrolling-${scrollPosition}` : 'is-scrolling-none']"
-      :style="[bodyHeight]">
+      :style="[bodyHeight,bodyZIndex]">
       <table-body
         :context="context"
         :store="store"
@@ -147,7 +147,8 @@
       class="el-table__fixed-right"
       ref="rightFixedWrapper"
       :style="[{
-        width: layout.rightFixedWidth ? layout.rightFixedWidth + 'px' : '',
+        // 这里右侧的固定列宽度加1个像素，不然它的左边框会显示不出来
+        width: layout.rightFixedWidth ? (layout.rightFixedWidth+1) + 'px' : '',
         right: layout.scrollY ? (border ? layout.gutterWidth : (layout.gutterWidth || 0)) + 'px' : ''
       },
       fixedHeight]">
@@ -518,6 +519,16 @@
               'max-height': (maxHeight - footerHeight - (this.showHeader ? headerHeight : 0)) + 'px'
             };
           }
+        }
+        return {};
+      },
+
+      bodyZIndex() {
+        // 若有显示合计行，那么body区域的表格的zIndex设置高一点，不然滚动条会被固定列挡住
+        if (this.showSummary) {
+          return {
+            zIndex: 2
+          };
         }
         return {};
       },
