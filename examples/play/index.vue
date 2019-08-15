@@ -1,5 +1,12 @@
 <template>
     <div style="margin: 20px;">
+        <div style="padding:10px;">
+            <el-button type="primary">按钮1</el-button>
+            <el-button type="info">按钮2</el-button>
+            <el-button type="danger" plain>按钮3</el-button>
+            <el-button type="warning" plain>按钮4</el-button>
+            <el-button>按钮5</el-button>
+        </div>
         <el-table :data="data" style="width:900px" show-summary border>
             <el-table-column label="姓名" prop="name" :width="200" fixed="left"></el-table-column>
             <el-table-column label="年龄" prop="age" :width="200"></el-table-column>

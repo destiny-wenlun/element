@@ -27,8 +27,7 @@
 
   @include button-size($--button-padding-vertical, $--button-padding-horizontal, $--button-font-size, $--button-border-radius);
 
-  &:hover,
-  &:focus {
+  &:hover {
     color: $--color-primary;
     border-color: $--color-primary-light-7;
     background-color: $--color-primary-light-9;
@@ -51,8 +50,7 @@
   }
 
   @include when(plain) {
-    &:hover,
-    &:focus {
+    &:hover {
       background: $--color-white;
       border-color: $--color-primary;
       color: $--color-primary;
@@ -88,8 +86,7 @@
 
     &.is-plain {
       &,
-      &:hover,
-      &:focus {
+      &:hover {
         background-color: $--color-white;
         border-color: $--button-disabled-border-color;
         color: $--button-disabled-font-color;
