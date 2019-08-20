@@ -15,22 +15,29 @@
         :class="['el-dialog', { 'is-fullscreen': fullscreen, 'el-dialog--center': center }, customClass]"
         ref="dialog"
         :style="style">
-        <div class="el-dialog__header">
-          <slot name="title">
-            <span class="el-dialog__title">{{ title }}</span>
-          </slot>
-          <button
-            type="button"
-            class="el-dialog__headerbtn"
-            aria-label="Close"
-            v-if="showClose"
-            @click="handleClose">
-            <i class="el-dialog__close el-icon el-icon-close"></i>
-          </button>
+        <div ref="headerBox">
+          <div ref="header" class="el-dialog__header">
+            <slot name="title">
+              <span class="el-dialog__title">{{ title }}</span>
+            </slot>
+            <button
+              type="button"
+              class="el-dialog__headerbtn"
+              aria-label="Close"
+              v-if="showClose"
+              @click="handleClose">
+              <i class="el-dialog__close el-icon el-icon-close"></i>
+            </button>
+          </div>
         </div>
-        <div class="el-dialog__body" v-if="rendered"><slot></slot></div>
-        <div class="el-dialog__footer" v-if="$slots.footer">
-          <slot name="footer"></slot>
+        <div ref="body" class="el-dialog__body" v-if="rendered"><slot></slot></div>
+        <div ref="footerBox">
+          <div v-show="showTips" ref="tips" class="el-dialog__footertips">
+            提示：滚动鼠标可显示更多内容...
+          </div>
+          <div ref="footer" class="el-dialog__footer" v-if="$slots.footer">
+            <slot name="footer"></slot>
+          </div>
         </div>
       </div>
     </div>
@@ -113,7 +120,9 @@
     data() {
       return {
         closed: false,
-        key: 0
+        key: 0,
+        showTips: false,
+        mutationObserver: null
       };
     },
 
@@ -123,19 +132,35 @@
           this.closed = false;
           this.$emit('open');
           this.$el.addEventListener('scroll', this.updatePopper);
+          this.$el.addEventListener('scroll', this.handleScroll);
           this.$nextTick(() => {
+            this.$el.scrollTop = 0;
             this.$refs.dialog.scrollTop = 0;
+            this.handleScroll();
+            if (window.MutationObserver && !this.mutationObserver) {
+              this.mutationObserver = new MutationObserver(() => {
+                // 监听body区域所有子元素及其后代属性、节点等变化，此时要处理一下footer的固定
+                this.handleScroll();
+              });
+            }
+            if (this.mutationObserver) {
+              this.mutationObserver.observe(this.$refs.body, {attributes: true, childList: true, characterData: true, subtree: true});
+            }
           });
           if (this.appendToBody) {
             document.body.appendChild(this.$el);
           }
         } else {
           this.$el.removeEventListener('scroll', this.updatePopper);
+          this.$el.removeEventListener('scoll', this.handleScroll);
           if (!this.closed) this.$emit('close');
           if (this.destroyOnClose) {
             this.$nextTick(() => {
               this.key++;
             });
+          }
+          if (this.mutationObserver) {
+            this.mutationObserver.disconnect();
           }
         }
       }
@@ -189,6 +214,48 @@
       },
       afterLeave() {
         this.$emit('closed');
+      },
+      handleScroll() {
+        const headerBox = this.$refs.headerBox;
+        const { top: headerTop } = headerBox.getBoundingClientRect();
+        const header = this.$refs.header;
+        headerBox.style.height = `${headerBox.offsetHeight}px`;
+        header.style.zIndex = this.$el.style.zIndex;
+        if (headerTop <= 0) {
+          header.style.position = 'fixed';
+          header.style.width = `${headerBox.offsetWidth}px`;
+          header.style.top = 0;
+          header.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.12)';
+        } else {
+          header.style.position = 'initial';
+          header.style.boxShadow = '0 0 0 #ccc';
+        }
+        const footerBox = this.$refs.footerBox;
+        footerBox.style.height = `${footerBox.offsetHeight}px`;
+        const { bottom: footerBottom } = footerBox.getBoundingClientRect();
+        const footer = this.$refs.footer;
+        const tips = this.$refs.tips;
+        if (footer) {
+          footer.style.zIndex = this.$el.style.zIndex;
+        }
+        tips.style.zIndex = this.$el.style.zIndex;
+        if (footerBottom >= innerHeight) {
+          this.showTips = !this.fullscreen;
+          if (footer) {
+            footer.style.position = 'fixed';
+            footer.style.width = `${footerBox.offsetWidth}px`;
+            footer.style.bottom = 0;
+            footer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.12)';
+          }
+          tips.style.bottom = footer ? footer.offsetHeight + 'px' : 0;
+          tips.style.width = `${footerBox.offsetWidth}px`;
+        } else {
+          this.showTips = false;
+          if (footer) {
+            footer.style.position = 'initial';
+            footer.style.boxShadow = '0 0 0 #ccc';
+          }
+        }
       }
     },
 
