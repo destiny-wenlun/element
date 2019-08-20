@@ -30,7 +30,7 @@
             </button>
           </div>
         </div>
-        <div ref="body" class="el-dialog__body" v-if="rendered"><slot></slot></div>
+        <div ref="body" class="el-dialog__body" v-if="!lazy||rendered"><slot></slot></div>
         <div ref="footerBox">
           <div v-show="showTips" ref="tips" class="el-dialog__footertips">
             提示：滚动鼠标可显示更多内容...
@@ -114,7 +114,12 @@
         default: false
       },
 
-      destroyOnClose: Boolean
+      destroyOnClose: Boolean,
+
+      lazy: {
+        type: Boolean,
+        default: true
+      }
     },
 
     data() {
