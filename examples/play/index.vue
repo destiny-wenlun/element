@@ -8,6 +8,13 @@
             <el-button>按钮5</el-button>
             <el-button @click="modal=true">打开模态框</el-button>
         </div>
+        <div style="display:flex;align-items:center;margin:5px 0;">
+            <el-checkbox-group v-model="form.vals">
+                <el-checkbox label="a">a</el-checkbox>
+                <el-checkbox label="b">b</el-checkbox>
+            </el-checkbox-group>
+            <el-button type="primary" size="mini" style="margin-left:10px;" @click="$message.info(JSON.stringify(form.vals)+'')">取值</el-button>
+        </div>
         <el-table :data="data" style="width:900px" show-summary border>
             <el-table-column label="姓名" prop="name" :width="200" fixed="left"></el-table-column>
             <el-table-column label="年龄" prop="age" :width="200"></el-table-column>
@@ -36,7 +43,8 @@ export default {
     data() {
         return {
             data: [],
-            modal: false
+            modal: false,
+            form: {}
         };
     },
     mounted() {
