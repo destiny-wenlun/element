@@ -147,6 +147,12 @@ export declare class ElTree<K, D extends TreeData> extends ElementUIComponent {
    */
   updateKeyChildren(key: K, data: D[]): void;
 
+  getExpandedNodes(): D[];
+  
+  getExpandedKeys(): K[];
+
+  setExpandedKeys(keys: K[]): void;
+
   /**
    * If the node can be selected (`show-checkbox` is `true`), it returns the currently selected array of nodes
    *

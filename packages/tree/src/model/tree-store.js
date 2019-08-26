@@ -152,6 +152,29 @@ export default class TreeStore {
     delete this.nodesMap[node.key];
   }
 
+  getExpandedNodes() {
+    const expandedNodes = [];
+    const traverse = function(node) {
+      const childNodes = node.root ? node.root.childNodes : node.childNodes;
+
+      childNodes.forEach((child) => {
+        if (child.expanded) {
+          expandedNodes.push(child.data);
+        }
+
+        traverse(child);
+      });
+    };
+
+    traverse(this);
+
+    return expandedNodes;
+  }
+
+  getExpandedKeys() {
+    return this.getExpandedNodes().map((data) => (data || {})[this.key]);
+  }
+
   getCheckedNodes(leafOnly = false, includeHalfChecked = false) {
     const checkedNodes = [];
     const traverse = function(node) {
@@ -222,6 +245,17 @@ export default class TreeStore {
       const child = data[i];
       this.append(child, node.data);
     }
+  }
+
+  setExpandedKeys(keys) {
+    if (!this.key || !keys) {
+      return;
+    }
+    const allNodes = this._getAllNodes();
+    allNodes.forEach(node => {
+      if (node.isLeaf) return;
+      node.expanded = keys.includes(node.key);
+    });
   }
 
   _setCheckedKeys(key, leafOnly = false, checkedKeys) {

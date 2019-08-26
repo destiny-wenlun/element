@@ -199,6 +199,14 @@
         return path.reverse();
       },
 
+      getExpandedNodes() {
+        return this.store.getExpandedNodes();
+      },
+
+      getExpandedKeys() {
+        return this.store.getExpandedKeys();
+      },
+
       getCheckedNodes(leafOnly, includeHalfChecked) {
         return this.store.getCheckedNodes(leafOnly, includeHalfChecked);
       },
@@ -216,6 +224,11 @@
         if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in getCurrentKey');
         const currentNode = this.getCurrentNode();
         return currentNode ? currentNode[this.nodeKey] : null;
+      },
+
+      setExpandedKeys(keys) {
+        if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCheckedKeys');
+        this.store.setExpandedKeys(keys);
       },
 
       setCheckedNodes(nodes, leafOnly) {
