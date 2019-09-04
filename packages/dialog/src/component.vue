@@ -225,10 +225,10 @@
         const { top: headerTop } = headerBox.getBoundingClientRect();
         const header = this.$refs.header;
         headerBox.style.height = `${headerBox.offsetHeight}px`;
+        header.style.width = `${headerBox.offsetWidth}px`;
         header.style.zIndex = this.$el.style.zIndex;
         if (headerTop <= 0) {
           header.style.position = 'fixed';
-          header.style.width = `${headerBox.offsetWidth}px`;
           header.style.top = 0;
           header.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.12)';
         } else {
@@ -241,6 +241,7 @@
         const footer = this.$refs.footer;
         const tips = this.$refs.tips;
         if (footer) {
+          footer.style.width = `${footerBox.offsetWidth}px`;
           footer.style.zIndex = this.$el.style.zIndex;
         }
         tips.style.zIndex = this.$el.style.zIndex;
@@ -248,7 +249,6 @@
           this.showTips = !this.fullscreen;
           if (footer) {
             footer.style.position = 'fixed';
-            footer.style.width = `${footerBox.offsetWidth}px`;
             footer.style.bottom = 0;
             footer.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.12)';
           }
