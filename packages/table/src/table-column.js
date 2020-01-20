@@ -147,7 +147,7 @@ export default {
       const specialTypes = Object.keys(cellForced);
       // renderHeader 属性不推荐使用。
       if (this.renderHeader) {
-        console.warn('[Element Warn][TableColumn]Comparing to render-header, scoped-slot header is easier to use. We recommend users to use scoped-slot header.');
+        // console.warn('[Element Warn][TableColumn]Comparing to render-header, scoped-slot header is easier to use. We recommend users to use scoped-slot header.');
       } else if (specialTypes.indexOf(column.type) === -1) {
         column.renderHeader = (h, scope) => {
           const renderHeader = this.$scopedSlots.header;
